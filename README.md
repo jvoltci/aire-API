@@ -1,2 +1,2 @@
-# unskai-API
+# aire-API
 A smart polling system.
