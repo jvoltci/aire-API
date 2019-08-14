@@ -1,0 +1,19 @@
+{
+  "name": "aire-api",
+  "version": "1.0.0",
+  "description": "A smart polling system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvoltci/unskai-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jvoltci/unskai-API/issues"
+  },
+  "homepage": "https://github.com/jvoltci/unskai-API#readme"
+}
