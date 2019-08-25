@@ -80,8 +80,8 @@ class Poll {
 			}
 	}
 	updatelist(data, socket) {
-		/*pollsData.listParticipants[data.index] = data.name;
-		socket.broadcast.emit('update clientListParticipants', pollsData.listParticipants)*/
+		pollsData.listParticipants[data.index] = data.name;
+		io.sockets.emit('update clientListParticipants', pollsData.listParticipants)
 	}
 }
 
