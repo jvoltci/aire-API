@@ -36,7 +36,7 @@ class Poll {
 	handlePseudonym(req, res) {
 		const { pseudonym } = req.body;
 		console.log(pseudonym, pollsData);
-		return res.json({isAvailable: true});
+		res.json({isAvailable: true});
 		/*try {
 			if(pollsData.pseudonym)
 				return res.send({isAvailable: true});
