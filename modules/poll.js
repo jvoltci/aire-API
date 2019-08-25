@@ -28,7 +28,8 @@ class Poll {
 	handleNew(req, res) {
 		console.log(req.body);
 		const { isSecure, pseudonym, questions, totalParticipants } = req.body;
-		const tempTotalParticipants = {};
+		try {
+			const tempTotalParticipants = {};
 		for(let i = 0; i < totalParticipants; ++i) {
 			tempTotalParticipants[i] = '';
 		}
@@ -48,6 +49,10 @@ class Poll {
 		socket.emit('live polls', tempPolls);
 		socket.broadcast.emit('live polls', tempPolls);
 		res.json({redirect: true})
+		}
+		catch(e) {
+			res.json({redirect: true})	
+		}
 	}
 	handlePseudonym(req, res) {
 		const { pseudonym } = req.body;
