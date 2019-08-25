@@ -1,9 +1,17 @@
 const User = require('./user');
 
 pollsData = {
-
+	/*'flai': {
+		'isSecure': true,
+		'listParticipants': {
+			'0': 'Jai',
+			'1': '',
+			'2': '',
+		},
+		'questions': ["There?", "Yes?"],
+		'totalParticipants': 10,
+	}*/
 }
-polls = []
 
 class Poll {
 	constructor(io) {
@@ -18,12 +26,22 @@ class Poll {
 		this.io.on('connection', (socket) => {
 			let user = new User(socket);
 
+			this.io.sockets.emit('live polls', this.curatePolllList());
 			socket.on('remove poll', pseudonym => this.removePoll(pseudonym))
-			socket.on('update serverListParticipants', (data) => this.updatelist(data, socket))
+			socket.on('update serverListParticipants', (data) => this.updatelist(data))
 		})
 	}
 	addSurvey(data, socket) { 
 		
+	}
+	curatePolllList() {
+		const tempPolls = Object.keys(pollsData).map((unit) => {
+			return {
+					isSecure: pollsData[unit].isSecure,
+					pseudonym: unit,
+				}
+		});
+		return tempPolls;
 	}
 	handleListParticipants(req, res) {
 		const { pseudonym } = req.body;
@@ -41,14 +59,7 @@ class Poll {
 			'questions': questions,
 			'totalParticipants': totalParticipants,
 		}
-		const tempPolls = polls.map((unit) => {
-			if(unit)
-				return {
-					isSecure: pollsData[unit].isSecure,
-					pseudonym: unit,
-				}
-		});
-		this.io.sockets.emit('live polls', tempPolls);
+		this.io.sockets.emit('live polls', this.curatePolllList());
 		res.json({redirect: true})
 	}
 	handlePseudonym(req, res) {
@@ -79,9 +90,9 @@ class Poll {
 				break;
 			}
 	}
-	updatelist(data, socket) {
-		pollsData.listParticipants[data.index] = data.name;
-		io.sockets.emit('update clientListParticipants', pollsData.listParticipants)
+	updatelist(data) {
+		pollsData[data.pseudonym].listParticipants[data.index] = data.name;
+		io.sockets.emit('update clientListParticipants', pollsData[data.pseudonym].listParticipants)
 	}
 }
 
