@@ -63,14 +63,19 @@ class Poll {
 		res.json({redirect: true})
 	}
 	handlePseudonym(req, res) {
+		let isAvailable = true;
 		const { pseudonym } = req.body;
 		Object.keys(pollsData).forEach(data => {
 			if(data === pseudonym)
-				return res.json({isAvailable: false});
+				isAvailable = false;
 		})
 
-		pollsData[pseudonym] = {};
-		return res.json({isAvailable: true})
+		if(isAvailable) {
+			pollsData[pseudonym] = {};
+			res.json({isAvailable: true})
+		}
+		else
+			res.json({isAvailable: false})
 
 	}
 	removePoll(pseudonym) {
