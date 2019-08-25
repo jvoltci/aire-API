@@ -26,7 +26,6 @@ class Poll {
 		
 	}
 	handleNew(req, res) {
-		console.log(req.body);
 		const { isSecure, pseudonym, questions, totalParticipants } = req.body;
 		const tempTotalParticipants = {};
 		for(let i = 0; i < totalParticipants; ++i) {
@@ -43,6 +42,7 @@ class Poll {
 		const tempPolls = polls.map((unit) => {
 			if(unit)
 				return {
+					console.log("In ", pollsData, unit);
 					isSecure: pollsData.unit.isSecure,
 					pseudonym: unit,
 				}
@@ -82,23 +82,8 @@ class Poll {
 			}
 	}
 	updatelist(data, socket) {
-		pollsData.listParticipants[data.index] = data.name;
-		socket.broadcast.emit('update clientListParticipants', pollsData.listParticipants)
-	}
-	addUser(user) {
-		return (data) => {
-			if(user.added) return;
-
-			try {
-				if(pollsData[data.pseudonym]) {
-					user.added = true;
-					user.pseudonym = data.pseudonym;
-				}
-			}
-			catch(e) {
-				this.io.broadcast('not available');
-			}
-		}
+		/*pollsData.listParticipants[data.index] = data.name;
+		socket.broadcast.emit('update clientListParticipants', pollsData.listParticipants)*/
 	}
 }
 
