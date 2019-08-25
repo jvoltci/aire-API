@@ -79,7 +79,7 @@ class Poll {
 	}
 	updatelist(data) {
 		pollsData[data.pseudonym].listParticipants[data.index] = data.name;
-		io.sockets.emit('update clientListParticipants', pollsData[data.pseudonym].listParticipants)
+		this.io.sockets.emit('update clientListParticipants', pollsData[data.pseudonym].listParticipants)
 	}
 }
 
