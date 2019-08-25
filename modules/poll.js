@@ -28,6 +28,7 @@ class Poll {
 		
 	}
 	handleNew(req, res) {
+		console.log(req.body);
 		const { isSecure, pseudonym, questions, totalParticipants } = req.body;
 		const tempTotalParticipants = {};
 		for(let i = 0; i < data.totalParticipants; ++i) {
@@ -47,6 +48,7 @@ class Poll {
 		});
 		socket.emit('live polls', tempPolls);
 		socket.broadcast.emit('live polls', tempPolls);
+		console.log("time to redirect")
 		res.json({redirect: true})
 	}
 	handlePseudonym(req, res) {
