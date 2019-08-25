@@ -66,11 +66,11 @@ class Poll {
 		const { pseudonym } = req.body;
 		Object.keys(pollsData).forEach(data => {
 			if(data === pseudonym)
-				res.json({isAvailable: false});
+				return res.json({isAvailable: false});
 		})
 
 		pollsData[pseudonym] = {};
-		res.json({isAvailable: true})
+		return res.json({isAvailable: true})
 
 	}
 	removePoll(pseudonym) {
