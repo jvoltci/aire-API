@@ -38,6 +38,8 @@ class Poll {
 			'questions': questions,
 			'totalParticipants': totalParticipants,
 		}
+		console.log(pollsData)
+		console.log(polls)
 		const tempPolls = polls.map((unit) => {
 			if(unit)
 				return {
