@@ -38,11 +38,11 @@ class Poll {
 		console.log(pseudonym, pollsData);
 		try {
 			if(pollsData.pseudonym)
-				res.send({isAvailable: true});
+				return res.send({isAvailable: true});
 		}
 		catch(e) {
 			pollsData[pseudonym] = {};
-			res.send({isAvailable: false})
+			return res.send({isAvailable: false})
 		}
 
 	}
