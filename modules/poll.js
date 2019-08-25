@@ -18,8 +18,6 @@ class Poll {
 		this.io.on('connection', (socket) => {
 			let user = new User(socket);
 
-			socket.on('new user', this.addUser(user));
-			socket.on('new survey', (data) => this.addSurvey(data, socket))
 			socket.on('remove poll', pseudonym => this.removePoll(pseudonym))
 			socket.on('update serverListParticipants', (data) => this.updatelist(data, socket))
 		})
@@ -46,9 +44,9 @@ class Poll {
 				pseudonym: unit,
 			}
 		});
+		console.log("time to redirect")
 		socket.emit('live polls', tempPolls);
 		socket.broadcast.emit('live polls', tempPolls);
-		console.log("time to redirect")
 		res.json({redirect: true})
 	}
 	handlePseudonym(req, res) {
