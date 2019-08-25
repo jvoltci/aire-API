@@ -3,7 +3,7 @@ const User = require('./user');
 pollsData = {
 
 }
-polls = ['flai']
+polls = []
 
 class Poll {
 	constructor(io) {
@@ -39,10 +39,11 @@ class Poll {
 			'totalParticipants': totalParticipants,
 		}
 		const tempPolls = polls.map((unit) => {
-			return {
-				isSecure: pollsData.unit.isSecure,
-				pseudonym: unit,
-			}
+			if(unit)
+				return {
+					isSecure: pollsData.unit.isSecure,
+					pseudonym: unit,
+				}
 		});
 		console.log("time to redirect")
 		socket.emit('live polls', tempPolls);
