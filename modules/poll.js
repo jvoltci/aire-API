@@ -37,13 +37,10 @@ class Poll {
 			'questions': questions,
 			'totalParticipants': totalParticipants,
 		}
-		console.log(pollsData)
-		console.log(polls)
 		const tempPolls = polls.map((unit) => {
-			console.log("In ", pollsData, unit);
 			if(unit)
 				return {
-					isSecure: pollsData.unit.isSecure,
+					isSecure: pollsData[unit].isSecure,
 					pseudonym: unit,
 				}
 		});
