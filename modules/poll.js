@@ -65,7 +65,7 @@ class Poll {
 	handlePseudonym(req, res) {
 		const { pseudonym } = req.body;
 		Object.keys(pollsData).forEach(data => {
-			if(unit === pseudonym)
+			if(data === pseudonym)
 				res.json({isAvailable: false});
 		})
 
