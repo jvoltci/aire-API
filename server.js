@@ -37,6 +37,7 @@ poll.init();
 
 app.get('/', (req, res) => { res.send('It is working') })
 app.post('/pseudonym', (req, res) => { poll.handlePseudonym(req, res) })
+app.post('/new', (req, res) => { poll.handleNew(req, res) })
 
 
 // Start server

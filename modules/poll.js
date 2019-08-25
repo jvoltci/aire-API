@@ -20,35 +20,63 @@ class Poll {
 
 			socket.on('new user', this.addUser(user));
 			socket.on('new survey', (data) => this.addSurvey(data, socket))
+			socket.on('remove poll', pseudonym => this.removePoll(pseudonym))
 			socket.on('update serverListParticipants', (data) => this.updatelist(data, socket))
 		})
 	}
 	addSurvey(data, socket) { 
+		
+	}
+	handleNew(req, res) {
+		const { isSecure, pseudonym, questions, totalParticipants } = req.body;
+		const tempTotalParticipants = {};
+		for(let i = 0; i < data.totalParticipants; ++i) {
+			tempTotalParticipants[i] = '';
+		}
 		pollsData[data.pseudonym] = {
 			'isSecure': data.isSecure,
+			'listParticipants': tempTotalParticipants,
 			'questions': data.questions,
 			'totalParticipants': data.totalParticipants,
 		}
-		polls.push({isSecure: data.isSecure, pseudonym: data.pseudonym});
-		socket.emit('live polls', polls)
-		socket.broadcast.emit('live polls', polls)
+		const tempPolls = polls.map((unit) => {
+			return {
+				isSecure: pollsData.unit.isSecure,
+				pseudonym: unit,
+			}
+		});
+		socket.emit('live polls', tempPolls);
+		socket.broadcast.emit('live polls', tempPolls);
 	}
 	handlePseudonym(req, res) {
 		const { pseudonym } = req.body;
-		console.log(pseudonym, pollsData);
 		res.json({isAvailable: true});
-		/*try {
-			if(pollsData.pseudonym)
-				return res.send({isAvailable: true});
-		}
-		catch(e) {
-			pollsData[pseudonym] = {};
-			return res.send({isAvailable: false})
-		}*/
+		polls.forEach(data => {
+			if(unit === pseudonym)
+				res.json({isAvailable: false});
+		})
+
+		polls.push(pseudonym);
+		res.json({isAvailable: true})
 
 	}
-	removeSurvey() {
+	removePoll(pseudonym) {
+		delete pollsData.pseudonym;
+		for(let i = 0; i < polls.length; ++i)
+			if(polls[i] === pseudonym) {
+				polls.splice(i, 1);
 
+				const tempPolls = polls.map((unit) => {
+					return {
+						isSecure: pollsData.unit.isSecure,
+						pseudonym: unit,
+					}
+				});
+				socket.emit('live polls', tempPolls);
+				socket.broadcast.emit('live polls', tempPolls);
+				
+				break;
+			}
 	}
 	updatelist(data, socket) {
 		pollsData.listParticipants[data.index] = data.name;
