@@ -40,9 +40,9 @@ class Poll {
 		console.log(pollsData)
 		console.log(polls)
 		const tempPolls = polls.map((unit) => {
+			console.log("In ", pollsData, unit);
 			if(unit)
 				return {
-					console.log("In ", pollsData, unit);
 					isSecure: pollsData.unit.isSecure,
 					pseudonym: unit,
 				}
