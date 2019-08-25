@@ -47,7 +47,7 @@ class Poll {
 		});
 		socket.emit('live polls', tempPolls);
 		socket.broadcast.emit('live polls', tempPolls);
-		res.status(200).json()
+		res.json({redirect: true})
 	}
 	handlePseudonym(req, res) {
 		const { pseudonym } = req.body;
