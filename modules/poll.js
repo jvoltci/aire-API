@@ -44,7 +44,7 @@ class Poll {
 					pseudonym: unit,
 				}
 		});
-		console.log("time to redirect")
+		console.log(tempPolls);
 		this.io.sockets.emit('live polls', tempPolls);
 		res.json({redirect: true})
 	}
