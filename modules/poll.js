@@ -72,9 +72,7 @@ class Poll {
 					}
 				});
 				delete pollsData.pseudonym;
-				socket.emit('live polls', tempPolls);
-				socket.broadcast.emit('live polls', tempPolls);
-
+				this.io.sockets.emit('live polls', tempPolls);
 				break;
 			}
 	}
