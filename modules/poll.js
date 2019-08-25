@@ -46,8 +46,7 @@ class Poll {
 				}
 		});
 		console.log("time to redirect")
-		this.io.emit('live polls', tempPolls);
-		this.io.broadcast.emit('live polls', tempPolls);
+		this.io.sockets.emit('live polls', tempPolls);
 		res.json({redirect: true})
 	}
 	handlePseudonym(req, res) {
