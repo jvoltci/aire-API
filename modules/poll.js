@@ -51,7 +51,6 @@ class Poll {
 	}
 	handlePseudonym(req, res) {
 		const { pseudonym } = req.body;
-		res.json({isAvailable: true});
 		polls.forEach(data => {
 			if(unit === pseudonym)
 				res.json({isAvailable: false});
@@ -73,6 +72,7 @@ class Poll {
 						pseudonym: unit,
 					}
 				});
+				delete pollsData.pseudonym;
 				socket.emit('live polls', tempPolls);
 				socket.broadcast.emit('live polls', tempPolls);
 
