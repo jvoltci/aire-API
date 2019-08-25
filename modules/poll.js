@@ -3,7 +3,7 @@ const User = require('./user');
 pollsData = {
 
 }
-polls = []
+polls = ['flai']
 
 class Poll {
 	constructor(io) {
@@ -29,14 +29,14 @@ class Poll {
 		console.log(req.body);
 		const { isSecure, pseudonym, questions, totalParticipants } = req.body;
 		const tempTotalParticipants = {};
-		for(let i = 0; i < data.totalParticipants; ++i) {
+		for(let i = 0; i < totalParticipants; ++i) {
 			tempTotalParticipants[i] = '';
 		}
 		pollsData[data.pseudonym] = {
-			'isSecure': data.isSecure,
+			'isSecure': isSecure,
 			'listParticipants': tempTotalParticipants,
-			'questions': data.questions,
-			'totalParticipants': data.totalParticipants,
+			'questions': questions,
+			'totalParticipants': totalParticipants,
 		}
 		const tempPolls = polls.map((unit) => {
 			return {
