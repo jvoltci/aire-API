@@ -25,6 +25,10 @@ class Poll {
 	addSurvey(data, socket) { 
 		
 	}
+	handleListParticipants(req, res) {
+		const { pseudonym } = req.body;
+		res.status(200).json(pollsData[pseudonym].listParticipants);
+	}
 	handleNew(req, res) {
 		const { isSecure, pseudonym, questions, totalParticipants } = req.body;
 		const tempTotalParticipants = {};
@@ -44,7 +48,6 @@ class Poll {
 					pseudonym: unit,
 				}
 		});
-		console.log(tempPolls);
 		this.io.sockets.emit('live polls', tempPolls);
 		res.json({redirect: true})
 	}
