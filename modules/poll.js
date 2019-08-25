@@ -32,7 +32,7 @@ class Poll {
 		for(let i = 0; i < totalParticipants; ++i) {
 			tempTotalParticipants[i] = '';
 		}
-		pollsData[data.pseudonym] = {
+		pollsData[pseudonym] = {
 			'isSecure': isSecure,
 			'listParticipants': tempTotalParticipants,
 			'questions': questions,
