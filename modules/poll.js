@@ -1,7 +1,7 @@
 const User = require('./user');
 const Nodes = require('./nodes');
 
-livePolls = []
+livePolls = {}
 
 class Poll {
 	constructor(io) {
@@ -35,7 +35,7 @@ class Poll {
 	dropUser(user) {
 		return () => {
 			if(user.pseudonym) {
-				livePolls = livePolls.filter(poll => poll.pseudonym !== user.pseudonym)
+				delete livePolls[user.pseudonym]
 				user.broadcast('live polls', livePolls);
 			}
 			this.nodes.remove(user);
@@ -49,7 +49,7 @@ class Poll {
 				isAvailable = false;
 		})
 		if(isAvailable) {
-			livePolls.push({pseudonym: pseudonym})
+			livePolls[pseudonym] = true;
 			res.json({isAvailable: true})
 		}
 		else
@@ -68,8 +68,8 @@ class Poll {
 	}
 	unpoll(user) {
 		return () => {
+			delete livePolls[user.pseudonym];
 			user.pseudonym = '';
-			livePolls = livePolls.filter(poll => poll.pseudonym !== user.pseudonym)
 			user.broadcast('live polls', livePolls);
 		}
 	}
@@ -86,7 +86,7 @@ class Poll {
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
 
-			livePolls.push({pseudonym: data.pseudonym, isSecure: data.isSecure});
+			livePolls[data.pseudonym] =data.isSecure;
 			user.broadcast('live polls', livePolls);
 		}
 	}
