@@ -18,7 +18,7 @@ class User {
   }
 
   broadcast(evt, data) {
-    this.socket.broadcast(evt, data);
+    this.socket.broadcast.emit(evt, data);
   }
 }
 
