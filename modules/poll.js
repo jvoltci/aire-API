@@ -43,6 +43,10 @@ class Poll {
 		});
 		return tempPolls;
 	}
+	fetchListQnP(req, res) {
+		const { pseudonym } = req.body
+		res.json(pollsData[pseudonym].questions);
+	}
 	handleListParticipants(req, res) {
 		const { pseudonym } = req.body;
 		res.status(200).json(pollsData[pseudonym].listParticipants);

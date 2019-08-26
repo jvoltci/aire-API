@@ -39,6 +39,7 @@ app.get('/', (req, res) => { res.send('It is working') })
 app.post('/pseudonym', (req, res) => { poll.handlePseudonym(req, res) })
 app.post('/new', (req, res) => { poll.handleNew(req, res) })
 app.post('/listparticipants', (req, res) => { poll.handleListParticipants(req, res) })
+app.post('/fetchq', (req, res) => { poll.fetchListQnP(req, res) })
 
 
 // Start server
