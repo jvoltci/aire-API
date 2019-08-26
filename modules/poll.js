@@ -44,7 +44,7 @@ class Poll {
 	handlePseudonym(req, res) {
 		let isAvailable = true;
 		const { pseudonym } = req.body;
-		this.nodes.forEach(user => {
+		this.nodes.list.forEach(user => {
 			if(user.pseudonym === pseudonym)
 				isAvailable = false;
 		})
