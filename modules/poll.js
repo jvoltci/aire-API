@@ -56,7 +56,7 @@ class Poll {
 			res.json({isAvailable: false})
 
 	}
-	listParticipants() {
+	listParticipants(user) {
 		return (pseudonym) => {
 			let list = {};
 			this.nodes.list.forEach(user => {
@@ -86,7 +86,7 @@ class Poll {
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
 
-			livePolls.push(data.pseudonym);
+			livePolls.push({pseudonym: data.pseudonym, isSecure: data.isSecure});
 			user.broadcast('live polls', livePolls);
 		}
 	}
