@@ -82,7 +82,7 @@ class Poll {
 				tempListParticipants[i] = '';
 			user.listParticipants = tempListParticipants;
 
-			user.pseudonym = data,pseudonym;
+			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
 
