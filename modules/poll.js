@@ -77,7 +77,7 @@ class Poll {
 		return (data) => {
 			user.isSecure = data.isSecure;
 
-			tempListParticipants = {};
+			let tempListParticipants = {};
 			for(let i = 0; i < data.totalParticipants; ++i)
 				tempListParticipants[i] = '';
 			user.listParticipants = tempListParticipants;
