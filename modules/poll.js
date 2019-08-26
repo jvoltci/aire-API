@@ -17,7 +17,7 @@ class Poll {
 		this.io.on('connection', (socket) => {
 			let user = new User(socket);
 
-			this.io.sockets.emit('live polls', livePolls);
+			//this.io.sockets.emit('live polls', livePolls);
 			socket.on('add user', this.addUser(user));
 			socket.on('forceDisconnect', this.dropUser(user));
 			socket.on('unpoll', this.unpoll(user));
