@@ -17,7 +17,7 @@ class Poll {
 		this.io.on('connection', (socket) => {
 			let user = new User(socket);
 
-			this.io.sockets.emit('live polls', this.curatePolllList());
+			this.io.sockets.emit('live polls', livePolls);
 
 			socket.on('add user', this.addUser(user));
 			socket.on('forceDisconnect', this.dropUser(user));
@@ -38,15 +38,11 @@ class Poll {
 	dropUser(user) {
 		return () => {
 			if(user.pseudonym) {
-				livePolls = livePolls.filter(poll => poll !== user.pseudonym)
+				livePolls = livePolls.filter(poll => poll.pseudonym !== user.pseudonym)
 				user.broadcast('live polls', livePolls);
 			}
 			this.nodes.remove(user);
 		}
-	}
-	handleListParticipants(req, res) {
-		const { pseudonym } = req.body;
-		res.status(200).json(pollsData[pseudonym].listParticipants);
 	}
 	handlePseudonym(req, res) {
 		let isAvailable = true;
@@ -55,9 +51,8 @@ class Poll {
 			if(user.pseudonym === pseudonym)
 				isAvailable = false;
 		})
-
 		if(isAvailable) {
-			pollsData[pseudonym] = {};
+			livePolls.push({pseudonym: pseudonym})
 			res.json({isAvailable: true})
 		}
 		else
@@ -74,18 +69,12 @@ class Poll {
 			user.emit('update clientListParticipants', list)
 		}
 	}
-	removePoll(pseudonym) {
-		delete pollsData[pseudonym];
-		this.io.sockets.emit('live polls', this.curatePolllList());
-	}
 	unpoll(user) {
 		return () => {
 			user.pseudonym = '';
+			livePolls = livePolls.filter(poll => poll.pseudonym !== user.pseudonym)
+			user.broadcast('live polls', livePolls);
 		}
-	}
-	updatelist(data) {
-		pollsData[data.pseudonym].listParticipants[data.index] = data.name;
-		this.io.sockets.emit('update clientListParticipants', pollsData[data.pseudonym].listParticipants)
 	}
 	updateUser(user) {
 		return (data) => {
