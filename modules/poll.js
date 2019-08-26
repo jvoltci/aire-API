@@ -27,8 +27,10 @@ class Poll {
 		})
 	}
 	addUser(user) {
-		user.added = true;
-		this.nodes.add(user);
+		return (pseudonym) => {
+			user.added = true;
+			this.nodes.add(user);
+		}
 	}
 	dropUser(user) {
 		return () => {
