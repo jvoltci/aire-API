@@ -18,16 +18,11 @@ class Poll {
 			let user = new User(socket);
 
 			this.io.sockets.emit('live polls', livePolls);
-
 			socket.on('add user', this.addUser(user));
 			socket.on('forceDisconnect', this.dropUser(user));
 			socket.on('unpoll', this.unpoll(user));
 			socket.on('le poll', this.updateUser(user))
 			socket.on('list participants', this.listParticipants(user))
-			socket.on('update pollResult', data => {
-				pollResult[data.pseudonym].pollResult = data.pollResult;
-				this.io.sockets.emit('update pollResult', pollResult[data.pseudonym].pollResult)
-			})
 			socket.on('update serverListParticipants', (data) => this.updatelist(data))
 		})
 	}
