@@ -1,13 +1,12 @@
 const User = require('./user');
+const Nodes = require('./nodes');
 
-pollsData = {
-
-}
-polls = []
+livePolls = {}
 
 class Poll {
 	constructor(io) {
 		this.io = io;
+		this.nodes = new Nodes();
 	}
 
 	init() {
@@ -18,54 +17,153 @@ class Poll {
 		this.io.on('connection', (socket) => {
 			let user = new User(socket);
 
-			socket.on('new user', this.addUser(user));
-			socket.on('new survey', (data) => this.addSurvey(data, socket))
-			socket.on('update serverListParticipants', (data) => this.updatelist(data, socket))
+			this.io.sockets.emit('live polls', livePolls);
+			socket.on('add user', this.addUser(user));
+			socket.on('disconnect', this.dropUser(user));
+			socket.on('unpoll', this.unpoll(user));
+			socket.on('le poll', this.updateUser(user))
+			socket.on('update pollResult', this.updatePollResult(user))
+			socket.on('update serverListParticipants', this.updateParticipantsList(user))
 		})
 	}
-	addSurvey(data, socket) { 
-		pollsData[data.pseudonym] = {
-			'isSecure': data.isSecure,
-			'questions': data.questions,
-			'totalParticipants': data.totalParticipants,
+	addUser(user) {
+		return (pseudonym) => {
+			user.added = true;
+			this.nodes.add(user);
 		}
-		polls.push({isSecure: data.isSecure, pseudonym: data.pseudonym});
-		socket.emit('live polls', polls)
-		socket.broadcast.emit('live polls', polls)
+	}
+	dropUser(user) {
+		return () => {
+			if(user.pseudonym && user.isPollig) {
+				delete livePolls[user.pseudonym]
+				user.broadcast('live polls', livePolls);
+			}
+			this.nodes.remove(user);
+		}
+	}
+	fetchListQnP(req, res) {
+		const { pseudonym } = req.body;
+		this.nodes.list.forEach(user => {
+			if(user.pseudonym === pseudonym)
+				res.json(user.questions)
+		})
+	}
+	fetchLiveFeed(req, res) {
+		const { pseudonym } = req.body;
+		let eachQuestionsUpdates = {};
+		let user = '';
+		let total = '';
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+				user = pUser;
+				total = pUser.totalParticipants;
+				for(let i = 0; i < pUser.questions.length; ++i)
+					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
+				Object.keys(pUser.pollResult).map(id => {
+					const result = pUser.pollResult[id];
+
+					Object.keys(result).forEach(q => {
+						if(result[q] === '1')
+							eachQuestionsUpdates[q]['yes'] += 1;
+						else
+							eachQuestionsUpdates[q]['no'] += 1;
+					})
+				})
+			};
+		})
+		res.json({update: eachQuestionsUpdates, total: total})
+		user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
+	}
+	handleLiveFeed(pseudonym) {
+		let eachQuestionsUpdates = {};
+		let total = '';
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+				total = pUser.totalParticipants;
+				for(let i = 0; i < pUser.questions.length; ++i)
+					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
+				Object.keys(pUser.pollResult).map(id => {
+					const result = pUser.pollResult[id];
+					Object.keys(result).forEach(q => {
+						if(result[q] === '1')
+							eachQuestionsUpdates[q]['yes'] += 1;
+						else
+							eachQuestionsUpdates[q]['no'] += 1;
+					})
+				})
+			};
+		})
+		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
+		let isAvailable = true;
 		const { pseudonym } = req.body;
-		console.log(pseudonym, pollsData);
-		try {
-			if(pollsData.pseudonym)
-				res.status(200).json({isAvailable: true});
+		this.nodes.list.forEach(user => {
+			if(user.pseudonym === pseudonym)
+				isAvailable = false;
+		})
+		if(isAvailable) {
+			livePolls[pseudonym] = true;
+			res.json({isAvailable: true})
 		}
-		catch(e) {
-			pollsData[pseudonym] = {};
-			res.status(400).json({isAvailable: false})
+		else
+			res.json({isAvailable: false})
+
+	}
+	listParticipants(req, res) {
+		const { pseudonym } = req.body;
+		let list = {};
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym)
+				list = pUser.listParticipants;
+		})
+		res.json(list);
+		//pUser.emit('update clientListParticipants', list)
+	}
+	unpoll(user) {
+		return () => {
+			delete livePolls[user.pseudonym];
+			user.isPollig = false;
+			user.pseudonym = '';
+			this.io.sockets.emit('live polls', livePolls);
 		}
-
 	}
-	removeSurvey() {
-
-	}
-	updatelist(data, socket) {
-		pollsData.listParticipants[data.index] = data.name;
-		socket.broadcast.emit('update clientListParticipants', pollsData.listParticipants)
-	}
-	addUser(user) {
-		return (data) => {
-			if(user.added) return;
-
-			try {
-				if(pollsData[data.pseudonym]) {
-					user.added = true;
-					user.pseudonym = data.pseudonym;
+	updateParticipantsList(user) {
+		return ({pseudonym, index, name}) => {
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+					pUser.listParticipants[index] = name;
+					pUser.broadcast('update clientListParticipants', pUser.listParticipants)
 				}
-			}
-			catch(e) {
-				this.io.broadcast('not available');
-			}
+			})
+		}
+	}
+	updatePollResult(user) {
+		return (data) => {
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === data.pseudonym && pUser.isPollig) {
+					pUser.pollResult[user.id] = data.pollResult;
+				}
+			})
+			this.handleLiveFeed(data.pseudonym);
+		}
+	}
+	updateUser(user) {
+		return (data) => {
+			user.isSecure = data.isSecure;
+
+			let tempListParticipants = {};
+			for(let i = 0; i < data.totalParticipants; ++i)
+				tempListParticipants[i] = '';
+			user.listParticipants = tempListParticipants;
+
+			user.isPollig = true;
+			user.pseudonym = data.pseudonym;
+			user.questions = data.questions;
+			user.totalParticipants = data.totalParticipants;
+
+			livePolls[data.pseudonym] = data.isSecure;
+			user.broadcast('live polls', livePolls);
 		}
 	}
 }

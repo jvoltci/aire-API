@@ -27,16 +27,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use('/node_modules',  express.static( path.join(__dirname, '/node_modules')));
-/*app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://alre.ml");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});*/
+});
 
 poll.init();
 
 app.get('/', (req, res) => { res.send('It is working') })
 app.post('/pseudonym', (req, res) => { poll.handlePseudonym(req, res) })
+app.post('/fetchq', (req, res) => { poll.fetchListQnP(req, res) })
+app.post('/fetchlivefeed', (req, res) => { poll.fetchLiveFeed(req, res) })
+app.post('/listparticipants', (req, res) => { poll.listParticipants(req, res) })
 
 
 // Start server
@@ -67,13 +70,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
+
 
 
 module.exports = server;
