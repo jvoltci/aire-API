@@ -23,6 +23,8 @@ class Poll {
 			socket.on('unpoll', this.unpoll(user));
 			socket.on('le poll', this.updateUser(user))
 			socket.on('list participants', this.listParticipants(user))
+			socket.on('live feed', this.handleLiveFeed(user))
+			socket.on('update pollResult', this.updatePollResult(user))
 			socket.on('update serverListParticipants', (data) => this.updatelist(data))
 		})
 	}
@@ -39,6 +41,37 @@ class Poll {
 				user.broadcast('live polls', livePolls);
 			}
 			this.nodes.remove(user);
+		}
+	}
+	fetchListQnP(req, res) {
+		const { pseudonym } = req.body;
+		this.nodes.list.forEach(user => {
+			if(user.pseudonym === pseudonym)
+				res.json(user.questions)
+		})
+	}
+	handleLiveFeed(user) {
+		return (pseudonym) => {
+			let eachQuestionsUpdates = {};
+			let total = '';
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === pseudonym) {
+					total = pUser.totalParticipants;
+					for(let i = 0; i < Object.keys(pUser.pollResult[Object.keys(pUser.pollResult)[0]]).length; ++i)
+						eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
+					Object.keys(pUser.pollResult).map(id => {
+						const result = pUser.pollResult[id];
+
+						Object.keys(result).forEach(q => {
+							if(result[q])
+								eachQuestionsUpdates[q]['yes'] += 1;
+							else
+								eachQuestionsUpdates[q]['no'] += 1;
+						})
+					})
+				};
+			})
+			user.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 		}
 	}
 	handlePseudonym(req, res) {
@@ -73,6 +106,15 @@ class Poll {
 			user.broadcast('live polls', livePolls);
 		}
 	}
+	updatePollResult(user) {
+		return (data) => {
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === data.pseudonym) {
+					pUser.pollResult[user.id] = data.pollResult;
+				}
+			})
+		}
+	}
 	updateUser(user) {
 		return (data) => {
 			user.isSecure = data.isSecure;
@@ -82,6 +124,7 @@ class Poll {
 				tempListParticipants[i] = '';
 			user.listParticipants = tempListParticipants;
 
+			user.polling = true;
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
