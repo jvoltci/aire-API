@@ -50,6 +50,30 @@ class Poll {
 				res.json(user.questions)
 		})
 	}
+	fetchLiveFeed(req, res) {
+		const { pseudonym } = req.body;
+		let eachQuestionsUpdates = {};
+		let total = '';
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym && pUser.polling) {
+				total = pUser.totalParticipants;
+				for(let i = 0; i < pUser.questions.length; ++i)
+					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
+				Object.keys(pUser.pollResult).map(id => {
+					const result = pUser.pollResult[id];
+
+					Object.keys(result).forEach(q => {
+						if(result[q])
+							eachQuestionsUpdates[q]['yes'] += 1;
+						else
+							eachQuestionsUpdates[q]['no'] += 1;
+					})
+				})
+			};
+		})
+		res.json({update: eachQuestionsUpdates, total: total})
+		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+	}
 	handleLiveFeed(user) {
 		return (pseudonym) => {
 			let eachQuestionsUpdates = {};

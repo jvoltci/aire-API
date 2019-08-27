@@ -38,6 +38,7 @@ poll.init();
 app.get('/', (req, res) => { res.send('It is working') })
 app.post('/pseudonym', (req, res) => { poll.handlePseudonym(req, res) })
 app.post('/fetchq', (req, res) => { poll.fetchListQnP(req, res) })
+app.post('/fetchlivefeed', (req, res) => { poll.fetchLiveFeed(req, res) })
 
 
 // Start server
