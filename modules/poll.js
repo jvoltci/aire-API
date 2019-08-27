@@ -57,7 +57,7 @@ class Poll {
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.questions) {
 					total = pUser.totalParticipants;
-					for(let i = 0; i < pUser.totalQ; ++i)
+					for(let i = 0; i < pUser.questions.length; ++i)
 						eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
 					Object.keys(pUser.pollResult).map(id => {
 						const result = pUser.pollResult[id];
