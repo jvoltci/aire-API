@@ -53,7 +53,7 @@ class Poll {
 		let eachQuestionsUpdates = {};
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.polling) {
+			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
@@ -77,7 +77,7 @@ class Poll {
 		let eachQuestionsUpdates = {};
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.polling) {
+			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
@@ -124,7 +124,7 @@ class Poll {
 	unpoll(user) {
 		return () => {
 			delete livePolls[user.pseudonym];
-			user.polling = false;
+			user.isPollig = false;
 			user.pseudonym = '';
 			user.broadcast('live polls', livePolls);
 		}
@@ -132,7 +132,7 @@ class Poll {
 	updatePollResult(user) {
 		return (data) => {
 			this.nodes.list.forEach(pUser => {
-				if(pUser.pseudonym === data.pseudonym && pUser.polling) {
+				if(pUser.pseudonym === data.pseudonym && pUser.isPollig) {
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
@@ -148,13 +148,12 @@ class Poll {
 				tempListParticipants[i] = '';
 			user.listParticipants = tempListParticipants;
 
-			user.polling = true;
+			user.isPollig = true;
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
-			user.totalQ = data.totalQ;
 
-			livePolls[data.pseudonym] =data.isSecure;
+			livePolls[data.pseudonym] = data.isSecure;
 			user.broadcast('live polls', livePolls);
 		}
 	}

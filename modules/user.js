@@ -1,7 +1,7 @@
 class User {
   constructor(socket) {
     this.added = false;
-    this.polling = false;
+    this.isPolling = false;
     this.socket = socket;
 
     this.pseudonym = '';
@@ -9,7 +9,6 @@ class User {
     this.listParticipants = {}
     this.questions = [];
     this.totalParticipants = 0;
-    this.totalQ = 0;
     this.pollResult = {};
     this.id = socket.id;
   }
