@@ -52,7 +52,7 @@ class Poll {
 	}
 	handleLiveFeed(user) {
 		return (pseudonym) => {
-			let eachQuestionsUpdates = {}; 
+			let eachQuestionsUpdates = {};
 			let total = '';
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym) {
