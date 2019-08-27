@@ -34,7 +34,7 @@ class Poll {
 	}
 	dropUser(user) {
 		return () => {
-			if(user.pseudonym && user.isPollig) {
+			if(user.pseudonym && user.isPolling) {
 				delete livePolls[user.pseudonym]
 				user.broadcast('live polls', livePolls);
 			}
@@ -54,7 +54,7 @@ class Poll {
 		let user = '';
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+			if(pUser.pseudonym === pseudonym && pUser.isPolling) {
 				user = pUser;
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
@@ -78,7 +78,7 @@ class Poll {
 		let eachQuestionsUpdates = {};
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+			if(pUser.pseudonym === pseudonym && pUser.isPolling) {
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
@@ -114,7 +114,7 @@ class Poll {
 		const { pseudonym } = req.body;
 		let list = {};
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.isPollig)
+			if(pUser.pseudonym === pseudonym && pUser.isPolling)
 				list = pUser.listParticipants;
 		})
 		res.json(list);
@@ -123,7 +123,7 @@ class Poll {
 	unpoll(user) {
 		return () => {
 			delete livePolls[user.pseudonym];
-			user.isPollig = false;
+			user.isPolling = false;
 			user.pseudonym = '';
 			this.io.sockets.emit('live polls', livePolls);
 		}
@@ -131,7 +131,7 @@ class Poll {
 	updateParticipantsList(user) {
 		return ({pseudonym, index, name}) => {
 			this.nodes.list.forEach(pUser => {
-				if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
 					pUser.listParticipants[index] = name;
 					pUser.broadcast('update clientListParticipants', pUser.listParticipants)
 				}
@@ -141,7 +141,7 @@ class Poll {
 	updatePollResult(user) {
 		return (data) => {
 			this.nodes.list.forEach(pUser => {
-				if(pUser.pseudonym === data.pseudonym && pUser.isPollig) {
+				if(pUser.pseudonym === data.pseudonym && pUser.isPolling) {
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
@@ -157,7 +157,7 @@ class Poll {
 				tempListParticipants[i] = '';
 			user.listParticipants = tempListParticipants;
 
-			user.isPollig = true;
+			user.isPolling = true;
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
