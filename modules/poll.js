@@ -73,29 +73,27 @@ class Poll {
 		res.json({update: eachQuestionsUpdates, total: total})
 		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
-	handleLiveFeed() {
-		return (pseudonym) => {
-			let eachQuestionsUpdates = {};
-			let total = '';
-			this.nodes.list.forEach(pUser => {
-				if(pUser.pseudonym === pseudonym && pUser.questions) {
-					total = pUser.totalParticipants;
-					for(let i = 0; i < pUser.questions.length; ++i)
-						eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
-					Object.keys(pUser.pollResult).map(id => {
-						const result = pUser.pollResult[id];
+	handleLiveFeed(pseudonym) {
+		let eachQuestionsUpdates = {};
+		let total = '';
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym && pUser.questions) {
+				total = pUser.totalParticipants;
+				for(let i = 0; i < pUser.questions.length; ++i)
+					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
+				Object.keys(pUser.pollResult).map(id => {
+					const result = pUser.pollResult[id];
 
-						Object.keys(result).forEach(q => {
-							if(result[q])
-								eachQuestionsUpdates[q]['yes'] += 1;
-							else
-								eachQuestionsUpdates[q]['no'] += 1;
-						})
+					Object.keys(result).forEach(q => {
+						if(result[q])
+							eachQuestionsUpdates[q]['yes'] += 1;
+						else
+							eachQuestionsUpdates[q]['no'] += 1;
 					})
-				};
-			})
-			this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
-		}
+				})
+			};
+		})
+		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
 		let isAvailable = true;
@@ -137,7 +135,7 @@ class Poll {
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
-			this.handleLiveFeed();
+			this.handleLiveFeed(data.pseudonym);
 		}
 	}
 	updateUser(user) {
