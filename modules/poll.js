@@ -63,7 +63,7 @@ class Poll {
 					const result = pUser.pollResult[id];
 
 					Object.keys(result).forEach(q => {
-						if(result[q])
+						if(result[q] === '1')
 							eachQuestionsUpdates[q]['yes'] += 1;
 						else
 							eachQuestionsUpdates[q]['no'] += 1;
@@ -84,9 +84,8 @@ class Poll {
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
 				Object.keys(pUser.pollResult).map(id => {
 					const result = pUser.pollResult[id];
-					console.log(result);
 					Object.keys(result).forEach(q => {
-						if(result[q] === 1)
+						if(result[q] === '1')
 							eachQuestionsUpdates[q]['yes'] += 1;
 						else
 							eachQuestionsUpdates[q]['no'] += 1;
