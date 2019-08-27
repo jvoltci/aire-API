@@ -25,7 +25,6 @@ class Poll {
 			socket.on('list participants', this.listParticipants(user))
 			socket.on('live feed', this.handleLiveFeed(user))
 			socket.on('update pollResult', this.updatePollResult(user))
-			socket.on('update serverListParticipants', (data) => this.updatelist(data))
 		})
 	}
 	addUser(user) {
