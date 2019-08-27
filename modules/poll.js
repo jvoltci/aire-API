@@ -102,6 +102,7 @@ class Poll {
 	unpoll(user) {
 		return () => {
 			delete livePolls[user.pseudonym];
+			user.polling = false;
 			user.pseudonym = '';
 			user.broadcast('live polls', livePolls);
 		}
