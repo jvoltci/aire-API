@@ -74,7 +74,7 @@ class Poll {
 		res.json({update: eachQuestionsUpdates, total: total})
 		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
-	handleLiveFeed(user) {
+	handleLiveFeed() {
 		return (pseudonym) => {
 			let eachQuestionsUpdates = {};
 			let total = '';
@@ -95,7 +95,7 @@ class Poll {
 					})
 				};
 			})
-			user.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+			this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 		}
 	}
 	handlePseudonym(req, res) {
@@ -138,6 +138,7 @@ class Poll {
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
+			this.handleLiveFeed();
 		}
 	}
 	updateUser(user) {
