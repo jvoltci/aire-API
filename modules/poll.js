@@ -51,9 +51,11 @@ class Poll {
 	fetchLiveFeed(req, res) {
 		const { pseudonym } = req.body;
 		let eachQuestionsUpdates = {};
+		let user = '';
 		let total = '';
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+				user = pUser;
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
@@ -71,7 +73,7 @@ class Poll {
 		})
 		console.log("In first post", eachQuestionsUpdates, total)
 		res.json({update: eachQuestionsUpdates, total: total})
-		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handleLiveFeed(pseudonym) {
 		let eachQuestionsUpdates = {};
