@@ -9,6 +9,7 @@ class User {
     this.listParticipants = {}
     this.questions = [];
     this.totalParticipants = 0;
+    this.totalQ = 0;
     this.pollResult = {};
     this.id = socket.id;
   }

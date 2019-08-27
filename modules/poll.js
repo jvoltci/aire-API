@@ -57,7 +57,7 @@ class Poll {
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.questions) {
 					total = pUser.totalParticipants;
-					for(let i = 0; i < Object.keys(pUser.pollResult[Object.keys(pUser.pollResult)[0]]).length; ++i)
+					for(let i = 0; i < pUser.totalQ; ++i)
 						eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
 					Object.keys(pUser.pollResult).map(id => {
 						const result = pUser.pollResult[id];
@@ -129,6 +129,7 @@ class Poll {
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
+			user.totalQ = data.totalQ;
 
 			livePolls[data.pseudonym] =data.isSecure;
 			user.broadcast('live polls', livePolls);
