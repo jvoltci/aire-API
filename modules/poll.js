@@ -69,6 +69,7 @@ class Poll {
 				})
 			};
 		})
+		console.log(eachQuestionsUpdates, total)
 		res.json({update: eachQuestionsUpdates, total: total})
 		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
@@ -92,6 +93,7 @@ class Poll {
 				})
 			};
 		})
+		console.log(eachQuestionsUpdates, total)
 		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
