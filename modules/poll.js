@@ -69,7 +69,7 @@ class Poll {
 				})
 			};
 		})
-		console.log(eachQuestionsUpdates, total)
+		console.log("In first post", eachQuestionsUpdates, total)
 		res.json({update: eachQuestionsUpdates, total: total})
 		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
@@ -77,7 +77,7 @@ class Poll {
 		let eachQuestionsUpdates = {};
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.questions) {
+			if(pUser.pseudonym === pseudonym && pUser.polling) {
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
