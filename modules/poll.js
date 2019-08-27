@@ -22,8 +22,8 @@ class Poll {
 			socket.on('disconnect', this.dropUser(user));
 			socket.on('unpoll', this.unpoll(user));
 			socket.on('le poll', this.updateUser(user))
-			socket.on('list participants', this.listParticipants(user))
 			socket.on('update pollResult', this.updatePollResult(user))
+			socket.on('update serverListParticipants', this.updateParticipantsList(user))
 		})
 	}
 	addUser(user) {
@@ -110,22 +110,32 @@ class Poll {
 			res.json({isAvailable: false})
 
 	}
-	listParticipants(user) {
-		return (pseudonym) => {
-			let list = {};
-			this.nodes.list.forEach(user => {
-				if(user.pseudonym === pseudonym)
-					list = user.listParticipants;
-			})
-			user.emit('update clientListParticipants', list)
-		}
+	listParticipants(req, res) {
+		const { pseudonym } = req.body;
+		let list = {};
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym && pUser.isPollig)
+				list = pUser.listParticipants;
+		})
+		res.json(list);
+		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
 		return () => {
 			delete livePolls[user.pseudonym];
 			user.isPollig = false;
 			user.pseudonym = '';
-			user.broadcast('live polls', livePolls);
+			this.io.sockets.emit('live polls', livePolls);
+		}
+	}
+	updateParticipantsList(user) {
+		return ({pseudonym, index, name}) => {
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === pseudonym && pUser.isPollig) {
+					pUser.listParticipants[index] = name;
+					pUser.broadcast('update clientListParticipants', pUser.listParticipants)
+				}
+			})
 		}
 	}
 	updatePollResult(user) {
