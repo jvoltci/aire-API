@@ -23,7 +23,6 @@ class Poll {
 			socket.on('unpoll', this.unpoll(user));
 			socket.on('le poll', this.updateUser(user))
 			socket.on('list participants', this.listParticipants(user))
-			socket.on('live feed', this.handleLiveFeed(user))
 			socket.on('update pollResult', this.updatePollResult(user))
 		})
 	}
