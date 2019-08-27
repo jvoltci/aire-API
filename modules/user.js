@@ -1,6 +1,5 @@
 class User {
   constructor(socket) {
-    this.added = false;
     this.isPolling = false;
     this.socket = socket;
 

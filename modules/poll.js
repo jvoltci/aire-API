@@ -113,7 +113,6 @@ class Poll {
 	listParticipants(req, res) {
 		const { pseudonym } = req.body;
 		let list = {};
-		console.log(this.nodes.list);
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym && pUser.isPolling)
 				list = pUser.listParticipants;
@@ -164,6 +163,7 @@ class Poll {
 			user.totalParticipants = data.totalParticipants;
 
 			livePolls[data.pseudonym] = data.isSecure;
+			console.log(user)
 			user.broadcast('live polls', livePolls);
 		}
 	}
