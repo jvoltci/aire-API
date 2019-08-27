@@ -34,7 +34,7 @@ class Poll {
 	}
 	dropUser(user) {
 		return () => {
-			if(user.pseudonym) {
+			if(user.pseudonym && user.isPollig) {
 				delete livePolls[user.pseudonym]
 				user.broadcast('live polls', livePolls);
 			}
@@ -71,7 +71,6 @@ class Poll {
 				})
 			};
 		})
-		console.log("In first post", eachQuestionsUpdates, total)
 		res.json({update: eachQuestionsUpdates, total: total})
 		user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
@@ -85,7 +84,7 @@ class Poll {
 					eachQuestionsUpdates[i] = {'yes': 0, 'no': 0}
 				Object.keys(pUser.pollResult).map(id => {
 					const result = pUser.pollResult[id];
-
+					console.log(result);
 					Object.keys(result).forEach(q => {
 						if(result[q] === 1)
 							eachQuestionsUpdates[q]['yes'] += 1;
@@ -95,7 +94,6 @@ class Poll {
 				})
 			};
 		})
-		console.log(eachQuestionsUpdates, total)
 		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
