@@ -163,7 +163,6 @@ class Poll {
 			user.totalParticipants = data.totalParticipants;
 
 			livePolls[data.pseudonym] = data.isSecure;
-			console.log(user)
 			user.broadcast('live polls', livePolls);
 		}
 	}
