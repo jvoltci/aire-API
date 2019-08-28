@@ -29,7 +29,6 @@ class Poll {
 	addUser(user) {
 		return (pseudonym) => {
 			this.nodes.add(user);
-			console.log(user, "In addUser")
 		}
 	}
 	dropUser(user) {
@@ -113,14 +112,11 @@ class Poll {
 	listParticipants(req, res) {
 		const { pseudonym } = req.body;
 		let list = {};
-		console.log(this.nodes.list, "In listParticipants")
 		this.nodes.list.forEach(pUser => {
-			console.log(pUser)
 			if(pUser.pseudonym === pseudonym && pUser.isPolling)
 				list = pUser.listParticipants;
 		})
 		res.json(list);
-		console.log(list, pseudonym);
 		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
@@ -153,17 +149,21 @@ class Poll {
 	}
 	updateUser(user) {
 		return (data) => {
+			if(!this.nodes.list.includes(user))
+				this.nodes.add(user);
+			
 			user.isSecure = data.isSecure;
 
 			let tempListParticipants = {};
 			for(let i = 0; i < data.totalParticipants; ++i)
 				tempListParticipants[i] = '';
 			user.listParticipants = tempListParticipants;
-					
+
 			user.isPolling = true;
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
+
 			livePolls[data.pseudonym] = data.isSecure;
 			user.broadcast('live polls', livePolls);
 		}
