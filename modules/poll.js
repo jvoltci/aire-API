@@ -118,6 +118,7 @@ class Poll {
 				list = pUser.listParticipants;
 		})
 		res.json(list);
+		console.log(list);
 		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
