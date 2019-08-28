@@ -113,6 +113,7 @@ class Poll {
 		const { pseudonym } = req.body;
 		let list = {};
 		this.nodes.list.forEach(pUser => {
+			console.log(pUser)
 			if(pUser.pseudonym === pseudonym && pUser.isPolling)
 				list = pUser.listParticipants;
 		})
