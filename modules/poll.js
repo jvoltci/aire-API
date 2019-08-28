@@ -28,7 +28,6 @@ class Poll {
 	}
 	addUser(user) {
 		return (pseudonym) => {
-			user.added = true;
 			this.nodes.add(user);
 		}
 	}
@@ -118,7 +117,7 @@ class Poll {
 				list = pUser.listParticipants;
 		})
 		res.json(list);
-		console.log(list);
+		console.log(list, pseudonym);
 		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
