@@ -29,7 +29,7 @@ class Poll {
 	addUser(user) {
 		return (pseudonym) => {
 			this.nodes.add(user);
-			console.log(this.nodes.list, "In addUser")
+			console.log(user, "In addUser")
 		}
 	}
 	dropUser(user) {
