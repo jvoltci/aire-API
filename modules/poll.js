@@ -27,11 +27,8 @@ class Poll {
 		})
 	}
 	addUser(user) {
-		console.log(user, "In addUser0")
-		return (pseudonym) => {
-			this.nodes.add(user);
-			console.log(user, "In addUser")
-		}
+		this.nodes.add(user);
+			console.log(this.nodes.list, "In addUser")
 	}
 	dropUser(user) {
 		return () => {
