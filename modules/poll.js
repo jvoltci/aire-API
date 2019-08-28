@@ -29,6 +29,7 @@ class Poll {
 	addUser(user) {
 		return (pseudonym) => {
 			this.nodes.add(user);
+			console.log(this.nodes.list, "In addUser")
 		}
 	}
 	dropUser(user) {
@@ -112,6 +113,7 @@ class Poll {
 	listParticipants(req, res) {
 		const { pseudonym } = req.body;
 		let list = {};
+		console.log(this.nodes.list, "In listParticipants")
 		this.nodes.list.forEach(pUser => {
 			console.log(pUser)
 			if(pUser.pseudonym === pseudonym && pUser.isPolling)
@@ -161,7 +163,7 @@ class Poll {
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
-			
+			console.log(this.nodes.list, "In updateUser")
 			livePolls[data.pseudonym] = data.isSecure;
 			user.broadcast('live polls', livePolls);
 		}
