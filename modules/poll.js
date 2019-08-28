@@ -158,12 +158,12 @@ class Poll {
 			let tempListParticipants = {};
 			for(let i = 0; i < data.totalParticipants; ++i)
 				tempListParticipants[i] = '';
-			user.listParticipants = tempListParticipants;			
+			user.listParticipants = tempListParticipants;
+					
 			user.isPolling = true;
 			user.pseudonym = data.pseudonym;
 			user.questions = data.questions;
 			user.totalParticipants = data.totalParticipants;
-			console.log(this.nodes.list, "In updateUser")
 			livePolls[data.pseudonym] = data.isSecure;
 			user.broadcast('live polls', livePolls);
 		}
