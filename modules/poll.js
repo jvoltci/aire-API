@@ -28,7 +28,6 @@ class Poll {
 	}
 	addUser(user) {
 		return (pseudonym) => {
-			user.added = true;
 			this.nodes.add(user);
 		}
 	}
@@ -150,6 +149,9 @@ class Poll {
 	}
 	updateUser(user) {
 		return (data) => {
+			if(!this.nodes.list.includes(user))
+				this.nodes.add(user);
+			
 			user.isSecure = data.isSecure;
 
 			let tempListParticipants = {};
