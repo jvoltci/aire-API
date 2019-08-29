@@ -53,7 +53,7 @@ class Poll {
 		let user = '';
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.isPolling) {
+			if(pUser.pseudonym === pseudonym) {
 				user = pUser;
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
