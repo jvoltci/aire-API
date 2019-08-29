@@ -53,7 +53,7 @@ class Poll {
 		let user = '';
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym) {
+			if(pUser.pseudonym && pUser.isPolling) {
 				user = pUser;
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
@@ -70,8 +70,14 @@ class Poll {
 				})
 			};
 		})
-		res.json({update: eachQuestionsUpdates, total: total})
-		user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
+		
+		if(user) {
+			res.json({update: eachQuestionsUpdates, total: total})
+			user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
+		}
+		else {
+			res.redirect('https://alre.ml/#/error')
+		}
 	}
 	handleLiveFeed(pseudonym) {
 		let eachQuestionsUpdates = {};
