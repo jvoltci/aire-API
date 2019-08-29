@@ -116,7 +116,10 @@ class Poll {
 			if(pUser.pseudonym === pseudonym && pUser.isPolling)
 				list = pUser.listParticipants;
 		})
-		res.json(list);
+		if(list)
+			res.json(list);
+		else
+			res.json(false);
 		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
