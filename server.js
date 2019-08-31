@@ -18,7 +18,7 @@ const PollApp = require('./modules/poll')
 const app = express();
 const server = require('http').createServer(app);
 const port = process.env.PORT || 5000;
-const io = require('socket.io')(server);
+const io = require('socket.io')(server).listen(port);
 const poll = new PollApp(io);
 
 app.use(cors());
