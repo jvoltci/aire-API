@@ -107,7 +107,6 @@ class Poll {
 			if(user.pseudonym === pseudonym)
 				isAvailable = false;
 		})
-		console.log(livePolls, isAvailable)
 		if(isAvailable) {
 			livePolls[pseudonym] = true;
 			res.json({isAvailable: true})

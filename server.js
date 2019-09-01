@@ -18,7 +18,7 @@ const PollApp = require('./modules/poll')
 const app = express();
 const server = require('http').createServer(app);
 const port = process.env.PORT || 5000;
-const io = require('socket.io')(server).listen(port);
+const io = require('socket.io')(server);
 const poll = new PollApp(io);
 
 app.use(cors());
@@ -43,10 +43,10 @@ app.post('/listparticipants', (req, res) => { poll.listParticipants(req, res) })
 
 
 // Start server
-/*server.listen(port, () => {
+server.listen(port, () => {
   console.log(`listening on ${port}`);
 });
-*/
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   var err = new Error('Not Found');
