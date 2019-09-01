@@ -43,10 +43,10 @@ app.post('/listparticipants', (req, res) => { poll.listParticipants(req, res) })
 
 
 // Start server
-server.listen(port, () => {
+/*server.listen(port, () => {
   console.log(`listening on ${port}`);
 });
-
+*/
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   var err = new Error('Not Found');
