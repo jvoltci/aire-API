@@ -53,7 +53,7 @@ class Poll {
 		let user = '';
 		let total = '';
 		this.nodes.list.forEach(pUser => {
-			if(pUser.pseudonym === pseudonym && pUser.isPolling) {
+			if(pUser.pseudonym && pUser.isPolling) {
 				user = pUser;
 				total = pUser.totalParticipants;
 				for(let i = 0; i < pUser.questions.length; ++i)
@@ -70,10 +70,16 @@ class Poll {
 				})
 			};
 		})
-		res.json({update: eachQuestionsUpdates, total: total})
-		user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
+		
+		if(user) {
+			res.json({update: eachQuestionsUpdates, total: total})
+			user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
+		}
+		else {
+			res.redirect('https://alre.ml/#/error')
+		}
 	}
-	handleLiveFeed(pseudonym) {
+	handleLiveFeed(pseudonym, user) {
 		let eachQuestionsUpdates = {};
 		let total = '';
 		this.nodes.list.forEach(pUser => {
@@ -92,7 +98,12 @@ class Poll {
 				})
 			};
 		})
-		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym)
+				pUser.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		})
+		user.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		//this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
 		let isAvailable = true;
@@ -144,7 +155,7 @@ class Poll {
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
-			this.handleLiveFeed(data.pseudonym);
+			this.handleLiveFeed(data.pseudonym, user);
 		}
 	}
 	updateUser(user) {
