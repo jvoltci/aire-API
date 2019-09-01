@@ -98,7 +98,11 @@ class Poll {
 				})
 			};
 		})
-		this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		this.nodes.list.forEach(pUser => {
+			if(pUser.pseudonym === pseudonym)
+				pUser.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		})
+		//this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
 		let isAvailable = true;
