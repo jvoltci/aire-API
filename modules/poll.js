@@ -79,7 +79,7 @@ class Poll {
 			res.redirect('https://alre.ml/#/error')
 		}
 	}
-	handleLiveFeed(pseudonym) {
+	handleLiveFeed(pseudonym, user) {
 		let eachQuestionsUpdates = {};
 		let total = '';
 		this.nodes.list.forEach(pUser => {
@@ -102,6 +102,7 @@ class Poll {
 			if(pUser.pseudonym === pseudonym)
 				pUser.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 		})
+		user.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 		//this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
@@ -154,7 +155,7 @@ class Poll {
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
-			this.handleLiveFeed(data.pseudonym);
+			this.handleLiveFeed(data.pseudonym, user);
 		}
 	}
 	updateUser(user) {
