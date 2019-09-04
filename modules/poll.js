@@ -150,6 +150,7 @@ class Poll {
 	}
 	updatePollResult(user) {
 		return (data) => {
+			console.log(data.pollResult);
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === data.pseudonym && pUser.isPolling) {
 					pUser.pollResult[user.id] = data.pollResult;
