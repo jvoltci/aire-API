@@ -132,7 +132,7 @@ class Poll {
 	}
 	unpoll(user) {
 		console.log(livePolls);
-		return () => {
+		return (pseudonym) => {
 			delete livePolls[user.pseudonym];
 			user.isPolling = false;
 			user.pseudonym = '';
