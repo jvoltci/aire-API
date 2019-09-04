@@ -136,8 +136,8 @@ class Poll {
 			delete livePolls[user.pseudonym];
 			user.isPolling = false;
 			user.pseudonym = '';
-			this.io.sockets.emit('live polls', livePolls);
 			console.log(livePolls);
+			this.io.sockets.emit('live polls', livePolls);
 		}
 	}
 	updateParticipantsList(user) {
