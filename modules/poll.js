@@ -153,6 +153,7 @@ class Poll {
 			console.log(data.pollResult);
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === data.pseudonym && pUser.isPolling) {
+					console.log(data.pollResult, "IN");
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
