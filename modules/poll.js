@@ -131,12 +131,10 @@ class Poll {
 		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
-		console.log(livePolls);
 		return (pseudonym) => {
-			delete livePolls[pseudonym];
+			delete livePolls[user.pseudonym];
 			user.isPolling = false;
 			user.pseudonym = '';
-			console.log(livePolls);
 			this.io.sockets.emit('live polls', livePolls);
 		}
 	}
