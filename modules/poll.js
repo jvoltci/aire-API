@@ -98,6 +98,7 @@ class Poll {
 				})
 			};
 		})
+		console.log(eachQuestionsUpdates, total)
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym)
 				pUser.emit('update live feed', {update: eachQuestionsUpdates, total: total})
@@ -150,10 +151,8 @@ class Poll {
 	}
 	updatePollResult(user) {
 		return (data) => {
-			console.log(data.pollResult);
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === data.pseudonym && pUser.isPolling) {
-					console.log(data.pollResult, "IN");
 					pUser.pollResult[user.id] = data.pollResult;
 				}
 			})
