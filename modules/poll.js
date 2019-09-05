@@ -73,7 +73,7 @@ class Poll {
 		
 		if(user) {
 			res.json({update: eachQuestionsUpdates, total: total})
-			user.broadcast('fill live feed', {update: eachQuestionsUpdates, total: total})
+			user.broadcast('update live feed', {update: eachQuestionsUpdates, total: total})
 		}
 		else {
 			res.redirect('https://alre.ml/#/error')
@@ -100,10 +100,10 @@ class Poll {
 		})
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym)
-				pUser.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+				pUser.emit('update live feed', {update: eachQuestionsUpdates, total: total})
 		})
-		user.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
-		//this.io.sockets.emit('fill live feed', {update: eachQuestionsUpdates, total: total})
+		user.emit('update live feed', {update: eachQuestionsUpdates, total: total})
+		//this.io.sockets.emit('update live feed', {update: eachQuestionsUpdates, total: total})
 	}
 	handlePseudonym(req, res) {
 		let isAvailable = true;
@@ -131,7 +131,7 @@ class Poll {
 		//pUser.emit('update clientListParticipants', list)
 	}
 	unpoll(user) {
-		return () => {
+		return (pseudonym) => {
 			delete livePolls[user.pseudonym];
 			user.isPolling = false;
 			user.pseudonym = '';
