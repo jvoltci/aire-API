@@ -23,6 +23,7 @@ class Poll {
 			socket.on('unpoll', this.unpoll(user));
 			socket.on('le poll', this.updateUser(user))
 			socket.on('update pollResult', this.updatePollResult(user))
+			socket.on('update pseudonym', this.updateUserPseudonym(user))
 			socket.on('update serverListParticipants', this.updateParticipantsList(user))
 		})
 	}
@@ -98,7 +99,6 @@ class Poll {
 				})
 			};
 		})
-		console.log(this.nodes.list);
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym)
 				pUser.emit('update live feed', {update: eachQuestionsUpdates, total: total})
@@ -178,6 +178,11 @@ class Poll {
 
 			livePolls[data.pseudonym] = data.isSecure;
 			user.broadcast('live polls', livePolls);
+		}
+	}
+	updateUserPseudonym(user) {
+		return (pseudonym) => {
+			user.pseudonym = pseudonym;
 		}
 	}
 }
