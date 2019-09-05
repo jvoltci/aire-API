@@ -99,7 +99,6 @@ class Poll {
 				})
 			};
 		})
-		console.log("handleLiveFeed")
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym)
 				pUser.emit('update live feed', {update: eachQuestionsUpdates, total: total})
@@ -134,10 +133,12 @@ class Poll {
 	}
 	unpoll(user) {
 		return (pseudonym) => {
-			delete livePolls[user.pseudonym];
-			user.isPolling = false;
-			user.pseudonym = '';
-			this.io.sockets.emit('live polls', livePolls);
+			if(user.pseudonym === pseudonym && user.isPolling) {
+				delete livePolls[user.pseudonym];
+				user.isPolling = false;
+				user.pseudonym = '';
+				this.io.sockets.emit('live polls', livePolls);
+			}
 		}
 	}
 	updateParticipantsList(user) {
@@ -185,7 +186,6 @@ class Poll {
 		return (pseudonym) => {
 			if(!this.nodes.list.includes(user))
 				this.nodes.add(user);
-			console.log("updateUserPseudonym")
 			user.pseudonym = pseudonym;
 		}
 	}
