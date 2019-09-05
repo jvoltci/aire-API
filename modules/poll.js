@@ -44,7 +44,7 @@ class Poll {
 	fetchListQnP(req, res) {
 		const { pseudonym } = req.body;
 		this.nodes.list.forEach(user => {
-			if(user.pseudonym === pseudonym)
+			if(user.pseudonym === pseudonym && user.isPolling)
 				res.json(user.questions)
 		})
 	}
