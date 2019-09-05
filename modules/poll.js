@@ -99,6 +99,7 @@ class Poll {
 				})
 			};
 		})
+		console.log(this.nodes.list, "handleLiveFeed")
 		this.nodes.list.forEach(pUser => {
 			if(pUser.pseudonym === pseudonym)
 				pUser.emit('update live feed', {update: eachQuestionsUpdates, total: total})
@@ -182,6 +183,7 @@ class Poll {
 	}
 	updateUserPseudonym(user) {
 		return (pseudonym) => {
+			console.log(this.nodes.list, "updateUserPseudonym")
 			user.pseudonym = pseudonym;
 		}
 	}
