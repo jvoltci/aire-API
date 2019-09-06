@@ -143,7 +143,7 @@ class Poll {
 	}
 	updateParticipantsList(user) {
 		return ({pseudonym, index, name}) => {
-			list = '';
+			let list = '';
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
 					pUser.listParticipants[index] = name;
