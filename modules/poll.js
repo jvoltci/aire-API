@@ -143,10 +143,17 @@ class Poll {
 	}
 	updateParticipantsList(user) {
 		return ({pseudonym, index, name}) => {
+			list = '';
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
 					pUser.listParticipants[index] = name;
-					pUser.broadcast('update clientListParticipants', pUser.listParticipants)
+					list = pUser.listParticipants;
+					//pUser.broadcast('update clientListParticipants', pUser.listParticipants)
+				}
+			})
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === pseudonym) {
+					pUser.emit('update clientListParticipants', list)
 				}
 			})
 		}
