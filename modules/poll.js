@@ -148,11 +148,13 @@ class Poll {
 		}
 	}
 	updateParticipantsList(user) {
-		return ({pseudonym, index, name}) => {
+		return ({pseudonym, index, name='', isAddedAs=''}) => {
 			let list = '';
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
-					pUser.listParticipants[index].name = name;
+					if(name) pUser.listParticipants[index].name = name;
+					if(isAddedAs) listParticipants[index].isAdded = isAddedAs;
+
 					list = pUser.listParticipants;
 					//pUser.broadcast('update clientListParticipants', pUser.listParticipants)
 				}
@@ -181,12 +183,9 @@ class Poll {
 			user.isSecure = data.isSecure;
 
 			let tempListParticipants = {};
-			for(let i = 0; i < data.totalParticipants; ++i) {
-				if(user.isSecure)
-					tempListParticipants[i] = {name: '', isAdded: false}
-				else
-					tempListParticipants[i] = {name: '', isAdded: true}
-			}
+			for(let i = 0; i < data.totalParticipants; ++i)
+					tempListParticipants[i] = {name: '', isAdded: 'neutral'}
+
 			user.listParticipants = tempListParticipants;
 
 			user.isPolling = true;
