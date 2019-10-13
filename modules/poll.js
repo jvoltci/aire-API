@@ -109,16 +109,17 @@ class Poll {
 	handlePseudonym(req, res) {
 		let isAvailable = true;
 		const { pseudonym } = req.body;
-		this.nodes.list.forEach(user => {
+		/*this.nodes.list.forEach(user => {
 			if(user.pseudonym === pseudonym)
 				isAvailable = false;
-		})
-		if(isAvailable) {
-			livePolls[pseudonym] = true;
-			res.json({isAvailable: true})
+		})*/
+		try {
+			if(livePolls[pseudonym])
+				res.json({isAvailable: false});
 		}
-		else
-			res.json({isAvailable: false})
+		catch(e) {
+			res.json({isAvailable: true});
+		}
 
 	}
 	listParticipants(req, res) {
