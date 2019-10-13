@@ -23,6 +23,7 @@ class Poll {
 			socket.on('unpoll', this.unpoll(user));
 			socket.on('le poll', this.updateUser(user))
 			socket.on('update pollResult', this.updatePollResult(user))
+			socket.on('update pseudonym', this.updateUserPseudonym(user))
 			socket.on('update serverListParticipants', this.updateParticipantsList(user))
 		})
 	}
@@ -43,7 +44,7 @@ class Poll {
 	fetchListQnP(req, res) {
 		const { pseudonym } = req.body;
 		this.nodes.list.forEach(user => {
-			if(user.pseudonym === pseudonym)
+			if(user.pseudonym === pseudonym && user.isPolling)
 				res.json(user.questions)
 		})
 	}
@@ -108,16 +109,22 @@ class Poll {
 	handlePseudonym(req, res) {
 		let isAvailable = true;
 		const { pseudonym } = req.body;
-		this.nodes.list.forEach(user => {
+		/*this.nodes.list.forEach(user => {
 			if(user.pseudonym === pseudonym)
 				isAvailable = false;
-		})
-		if(isAvailable) {
-			livePolls[pseudonym] = true;
-			res.json({isAvailable: true})
+		})*/
+		try {
+			if(livePolls[pseudonym]) {
+				console.log("In Check, not Available")
+				res.json({isAvailable: false});
+			}
+			else
+				res.json({isAvailable: true});
 		}
-		else
-			res.json({isAvailable: false})
+		catch(e) {
+			console.log("Errror, Available")
+			res.json({isAvailable: true});
+		}
 
 	}
 	listParticipants(req, res) {
@@ -132,18 +139,29 @@ class Poll {
 	}
 	unpoll(user) {
 		return (pseudonym) => {
-			delete livePolls[user.pseudonym];
-			user.isPolling = false;
-			user.pseudonym = '';
-			this.io.sockets.emit('live polls', livePolls);
+			if(user.pseudonym === pseudonym && user.isPolling) {
+				delete livePolls[user.pseudonym];
+				user.isPolling = false;
+				user.pseudonym = '';
+				this.io.sockets.emit('live polls', livePolls);
+			}
 		}
 	}
 	updateParticipantsList(user) {
-		return ({pseudonym, index, name}) => {
+		return ({pseudonym, index, name='', isAddedAs=''}) => {
+			let list = '';
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
-					pUser.listParticipants[index] = name;
-					pUser.broadcast('update clientListParticipants', pUser.listParticipants)
+					if(name) pUser.listParticipants[index].name = name;
+					if(isAddedAs) pUser.listParticipants[index].isAdded = isAddedAs;
+
+					list = pUser.listParticipants;
+					//pUser.broadcast('update clientListParticipants', pUser.listParticipants)
+				}
+			})
+			this.nodes.list.forEach(pUser => {
+				if(pUser.pseudonym === pseudonym) {
+					pUser.emit('update clientListParticipants', list)
 				}
 			})
 		}
@@ -162,12 +180,12 @@ class Poll {
 		return (data) => {
 			if(!this.nodes.list.includes(user))
 				this.nodes.add(user);
-			
 			user.isSecure = data.isSecure;
 
 			let tempListParticipants = {};
 			for(let i = 0; i < data.totalParticipants; ++i)
-				tempListParticipants[i] = '';
+					tempListParticipants[i] = {name: '', isAdded: 'neutral'}
+
 			user.listParticipants = tempListParticipants;
 
 			user.isPolling = true;
@@ -177,6 +195,13 @@ class Poll {
 
 			livePolls[data.pseudonym] = data.isSecure;
 			user.broadcast('live polls', livePolls);
+		}
+	}
+	updateUserPseudonym(user) {
+		return (pseudonym) => {
+			if(!this.nodes.list.includes(user))
+				this.nodes.add(user);
+			user.pseudonym = pseudonym;
 		}
 	}
 }
