@@ -146,7 +146,7 @@ class Poll {
 			let list = '';
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
-					pUser.listParticipants[index] = name;
+					pUser.listParticipants[index].name = name;
 					list = pUser.listParticipants;
 					//pUser.broadcast('update clientListParticipants', pUser.listParticipants)
 				}
@@ -172,12 +172,15 @@ class Poll {
 		return (data) => {
 			if(!this.nodes.list.includes(user))
 				this.nodes.add(user);
-			
 			user.isSecure = data.isSecure;
 
 			let tempListParticipants = {};
-			for(let i = 0; i < data.totalParticipants; ++i)
-				tempListParticipants[i] = '';
+			for(let i = 0; i < data.totalParticipants; ++i) {
+				if(user.isSecure)
+					tempListParticipants[i] = {name: '', isAdded: false}
+				else
+					tempListParticipants[i] = {name: '', isAdded: true}
+			}
 			user.listParticipants = tempListParticipants;
 
 			user.isPolling = true;
