@@ -114,10 +114,13 @@ class Poll {
 				isAvailable = false;
 		})*/
 		try {
-			if(livePolls[pseudonym])
+			if(livePolls[pseudonym]) {
+				console.log("In Check, not Available")
 				res.json({isAvailable: false});
+			}
 		}
 		catch(e) {
+			console.log("Errror, Available")
 			res.json({isAvailable: true});
 		}
 
