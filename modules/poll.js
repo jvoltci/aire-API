@@ -153,7 +153,7 @@ class Poll {
 			this.nodes.list.forEach(pUser => {
 				if(pUser.pseudonym === pseudonym && pUser.isPolling) {
 					if(name) pUser.listParticipants[index].name = name;
-					if(isAddedAs) listParticipants[index].isAdded = isAddedAs;
+					if(isAddedAs) pUser.listParticipants[index].isAdded = isAddedAs;
 
 					list = pUser.listParticipants;
 					//pUser.broadcast('update clientListParticipants', pUser.listParticipants)
