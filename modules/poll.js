@@ -118,6 +118,8 @@ class Poll {
 				console.log("In Check, not Available")
 				res.json({isAvailable: false});
 			}
+			else
+				res.json({isAvailable: true});
 		}
 		catch(e) {
 			console.log("Errror, Available")
